@@ -1,0 +1,10 @@
+.modal-header.modal-default {
+    height: 80% !important;
+    padding-top:10%;
+    background-color:#636c72;
+    color: white;
+}
+
+.modal-header.modal-default button {
+    color: white;
+}

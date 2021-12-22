@@ -1,0 +1,20 @@
+<form (ngSubmit)="onConfirm()" *ngIf="active">
+  <div class="modal-header modal-default">
+      <h4 class="modal-title pull-left" [innerHTML]="title"></h4>
+      <button type="button" class="close pull-right" (click)="hideConfirmationModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div *ngIf="image" class="modal-body" [innerHTML]="image"></div>
+  <div class="modal-body" [innerHTML]="body.body_message"></div>
+  <div class="modal-footer">
+      <div class="text-right">
+          <button type="submit" class="btn btn-success" [innerHTML]="body.body_btn_confirm_txt">
+              
+          </button>
+          <button type="button" class="btn btn-default" (click)="onCancel()" [innerHTML]="body.body_btn_cancel_txt">
+              
+          </button>
+      </div>
+  </div>
+</form>

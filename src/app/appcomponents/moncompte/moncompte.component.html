@@ -1,0 +1,66 @@
+<div class="content-section introduction">
+  <div>
+    <span class="feature-title">Mon compte</span>
+    <hr>
+    <span *ngIf="auth.user$ | async as user">Bonjour {{user.nom}}, trouvez ci-dessous l'ensemble des informations vous concernant.</span>
+  </div>
+</div>
+
+<div class="content-section" *ngIf="auth.user$ | async as user">
+  <p-tabView>
+    <p-tabPanel header="Mon profil" leftIcon="fa-user">
+      The story begins as Don Vito Corleone, the head of a New York Mafia family, overseeshis daughter's wedding. His beloved son
+      ichael has just come home from the war, but does not intend to become part of his father's business. T hrough Michael's
+      life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+      kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the
+      good of the family.
+      <hr>
+      <p>Here is the list of components with 3rd party dependencies.</p>
+
+      <div class="doc-tablewrapper">
+          <table class="doc-table">
+              <thead>
+                  <tr>
+                      <th colspan="2">Mes coordonnées</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Nom</td>
+                      <td>{{user.nom}}</td>
+                  </tr>
+                  <tr>
+                      <td>Adresse mail</td>
+                      <td>{{user.email}}</td>
+                  </tr>
+                  <tr>
+                      <td>Téléphone</td>
+                      <td>05 65 59 97 47</td>
+                  </tr>
+                  <tr>
+                      <td>Adresse</td>
+                      <td>123 rue des petites chataignes, 31100 Toulouse</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+    
+    
+    </p-tabPanel>
+    <p-tabPanel header="Mon agenda" leftIcon="fa-calendar">
+      Francis Ford Coppola's legendary continuation and sequel to his landmark 1972 film, The_Godfather parallels the young Vito
+      Corleone's rise with his son Michael's spiritual fall, deepening The_Godfather's depiction of the dark side of the
+      American dream. In the early 1900s, the child Vito flees his Sicilian village for America after the local Mafia kills
+      his family. Vito struggles to make a living, legally or illegally, for his wife and growing brood in Little Italy,
+      killing the local Black Hand Fanucci after he demands his customary cut of the tyro's business. With Fanucci gone,
+      Vito's communal stature grows.
+      <hr>
+    </p-tabPanel>
+    <p-tabPanel header="Mes notifications" leftIcon="fa-bell-o" rightIcon="fa-bookmark-o">
+      After a break of more than 15 years, director Francis Ford Coppola and writer Mario Puzo returned to the well for this third
+      and final story of the fictional Corleone crime family. Two decades have passed, and crime kingpin Michael Corleone,
+      now divorced from his wife Kay has nearly succeeded in keeping his promise that his family would one day be completely
+      legitimate.
+    </p-tabPanel>
+  </p-tabView>
+</div>

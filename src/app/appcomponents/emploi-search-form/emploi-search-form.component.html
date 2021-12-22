@@ -1,0 +1,159 @@
+<div class="content-section introduction">
+  <div>
+    <span class="feature-title">Rechercher des offres d'emploi</span>
+    <hr>
+    <span>Formulaire de recherche multi-critères powered by emploi store logo & co</span>
+  </div>
+</div>
+
+<div class="content-section">
+  <!--
+  <div *ngIf="userSearchParamListe.length">
+    <ul>
+      <li *ngFor="let search of userSearchParamListe; let i = index">{{search.libelle}}</li>
+    </ul>
+  </div>
+  <hr>
+-->
+
+
+  <p-card title="Critères de recheche">
+    <p-selectButton [options]="formTypes" [(ngModel)]="selectedFormType"></p-selectButton>
+    <br>
+    <br>
+    <div>
+      <form role="form" [formGroup]="validateForm" (ngSubmit)="submitSearchForm()" novalidate>
+
+        <div class="form-group" *ngIf="selectedFormType=='searchFormAdvanced'">
+          <label for="metier">Mot(s) clé(s)
+            <br>
+            <small>Chaque mot clé ou expression comprend au moins 2 caractères. Caractères autorisés : [aA-zZ]+[0-9]+[espace]+[@#$%^&+./-""]</small>
+          </label>
+          <p-chips formControlName="keywords" (onAdd)="onKeywordAdd($event)"></p-chips>
+          <hr>
+        </div>
+
+
+        <div class="form-group">
+          <label for="metier">Métier(s) recheché(s)</label>
+          <input formControlName="metier" [typeahead]="ref_appellations" (typeaheadOnSelect)="typeaheadOnSelect($event)"
+            placeholder="Taper les 1ères lettres du métier recherché" typeaheadOptionField="ROME_PROFESSION_SHORT_NAME" class="form-control">
+          <errors [control]="validateForm.controls.metier"></errors>
+          <ul class="list">
+            <li *ngFor="let metier of metierSelectionnes; let i = index">{{metier.libelle}}
+              <span (click)="removeMetier(i)" class="badge badge-dark">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </span>
+            </li>
+          </ul>
+          <hr>
+        </div>
+
+        <h4 class="first">Localisation</h4>
+        <p-tabView (onChange)="onTabChange($event)">
+          <p-tabPanel header="Ville" leftIcon="fa-university">
+            <div class="form-group">
+              <p-inputMask formControlName="codepostal" mask="9*999" placeholder="Code Postal" (keyup)="onCpSelectionChange()"></p-inputMask>
+            </div>
+            <div class="form-group">
+              <p-dropdown formControlName="cityCode" *ngIf="villes?.length > 0" [options]="villes" placeholder="Sélectionner une ville"
+                optionLabel="name" (onChange)="onVilleSelectionChange($event)"></p-dropdown>
+            </div>
+            <div class="form-group">
+              <h6 *ngIf="validateForm.value.cityCode">Distance: {{validateForm.value.cityDistance}} km</h6>
+              <p-slider formControlName="cityDistance" [style]="{'width':'200px'}" [animate]="true" [max]="200" *ngIf="validateForm.value.cityCode"></p-slider>
+            </div>
+
+          </p-tabPanel>
+          <p-tabPanel header="Département" leftIcon="fa-bookmark" *ngIf="departements?.length > 0">
+            <ng-template pTemplate="content">
+              <div class="form-group">
+                <p-dropdown formControlName="departmentCode" [options]="departements" placeholder="Sélectionner un département" optionLabel="nom"
+                  (onChange)="onDepartementSelectionChange($event)"></p-dropdown>
+                  <br><br>
+                <p-checkbox formControlName="includeDepartementBoundaries" binary="true"></p-checkbox>
+                <label>Inclure les départements limitrophes</label>
+              </div>
+            </ng-template>
+          </p-tabPanel>
+
+          <p-tabPanel header="Région" leftIcon="fa-flag" *ngIf="regions?.length > 0">
+            <ng-template pTemplate="content">
+              <div class="form-group">
+                <p-dropdown formControlName="regionCode" [options]="regions" placeholder="Sélectionner une région" optionLabel="nom"
+                  (onChange)="onRegionSelectionChange($event)"></p-dropdown>
+              </div>
+            </ng-template>
+          </p-tabPanel>
+
+          <p-tabPanel header="Pays" leftIcon="fa-globe" *ngIf="pays?.length > 0">
+              <ng-template pTemplate="content">
+                <div class="form-group">
+                  <p-dropdown formControlName="countryCode" [options]="pays" placeholder="Sélectionner un pays" optionLabel="name"></p-dropdown>
+                </div>
+              </ng-template>
+          </p-tabPanel>
+        
+        </p-tabView>
+
+
+        <div class="form-group" *ngIf="delaySinceListe.length">
+          <label for="contrat">Offres crées depuis</label>
+          <br>
+          <div class="form-check form-check-inline" *ngFor="let delay of delaySinceListe">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" [id]='delay.libelle' [value]='delay.value' (change)="selectDelaySince($event)"
+              [checked]="!delay.value?'checked':''">
+            <label class="form-check-label" [for]='delay.libelle'>{{delay.libelle}}</label>
+          </div>
+          <hr>
+        </div>
+
+
+        <div class="form-group" *ngIf="liste_contrat_type && selectedFormType=='searchFormAdvanced'">
+          <label for="contrat">Types de contrat</label>
+          <br>
+          <div class="form-check form-check-inline" *ngFor="let contrat_type of liste_contrat_type">
+            <input #cbxContratType class="form-check-input" type="checkbox" [id]='"contratType_"+contrat_type._id' (click)="checkCountCheckboxContratType()"
+              [value]='contrat_type.CODE' (change)="onContratTypeSelectionChange($event, contrat_type.CODE)">
+            <label class="form-check-label" [for]='"contratType_"+contrat_type._id'>{{contrat_type.NAME}}</label>
+          </div>
+          <hr>
+        </div>
+
+
+        <div class="form-group" *ngIf="liste_contrat_spec && selectedFormType=='searchFormAdvanced'">
+          <label for="contrat">Contrats spécifiques</label>
+          <br>
+          <div class="form-check form-check-inline" *ngFor="let contrat_spec of liste_contrat_spec;let i = index">
+            <input #cbxContratSpec class="form-check-input" type="checkbox" [id]='"contratSpec_"+contrat_spec._id' (click)="checkCountCheckboxContratSpec()"
+              [value]='contrat_spec.CODE' (change)="onContratSpecSelectionChange($event, contrat_spec.CODE)">
+            <label class="form-check-label" [for]='"contratSpec_"+contrat_spec._id'>{{contrat_spec.NAME}}</label>
+          </div>
+          <hr>
+        </div>
+
+
+        <div class="form-group" *ngIf="liste_domaine_pro && selectedFormType=='searchFormAdvanced'">
+          <label for="contrat">Domaines professionnels</label>
+          <br>
+          <div class="form-check form-check-inline" *ngFor="let domainepro of liste_domaine_pro">
+            <input #cbxDomainePro class="form-check-input" type="checkbox" [id]='"domainepro_"+domainepro._id' [value]='domainepro.MAIN_PROF_AREA_CODE'
+              (click)="checkCountCheckboxDomainePro()" (change)="onDomaineProSelectionChange($event, domainepro.MAIN_PROF_AREA_CODE)">
+            <label class="form-check-label" [for]='"domainepro_"+domainepro._id'>{{domainepro.MAIN_PROF_AREA_NAME}}</label>
+          </div>
+          <hr>
+        </div>
+
+
+        <pre>{{validateForm.value | json}}</pre>
+
+
+        <div class="form-group" *ngIf="validateForm.valid">
+          <button class="btn btn-primary">Valider</button>
+        </div>
+      </form>
+
+    </div>
+  </p-card>
+
+</div>

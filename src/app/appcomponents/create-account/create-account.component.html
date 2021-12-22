@@ -1,0 +1,48 @@
+<div class="content-section">
+
+    <p-card title="Créer un compte">
+        <div>
+            <form role="form" [formGroup]="validateForm" (ngSubmit)="signUpWithEmailAndPassword()" novalidate>
+                <div class="form-group">
+                  <label for="inputUsernameEmail">Votre nom</label>
+                  <input type="text" class="form-control" name="name" formControlName="name">
+                  <errors [control]="validateForm.controls.name"></errors>
+                </div>
+    
+                <div class="form-group">
+                  <label for="inputUsernameEmail">Adresse mail</label>
+                  <input type="text" class="form-control" id="email" name="email" formControlName="email" (focusout)="emailcheck()">
+                  <ul *ngIf="emailIsChecked===false">
+                    <li style="color: red">Cette adresse email est déjà enregistrée.</li>
+                  </ul>
+                  <errors [control]="validateForm.controls.email"></errors>
+                </div>
+    
+                <div class="form-group">
+                  <label for="inputPassword">Mot de passe</label>
+                  <input type="password" class="form-control" name="password" formControlName="password" >
+                  <errors [control]="validateForm.controls.password"></errors>
+                </div>
+    
+                <div class="form-group">
+                  <label for="inputPassword">Confirmation du mot de passe</label>
+                  <input type="password" class="form-control" name="passwordConfirm" formControlName="passwordConfirm" (focusout)="passwordsCheck()">
+                  <errors [control]="validateForm.controls.passwordConfirm"></errors>
+                </div>
+                <ul *ngIf="passwordsIsChecked===false">
+                  <li style="color: red">Les mots de passes ne sont pas identiques</li>
+                </ul>
+                <div class="checkbox pull-right">
+                </div>
+                <button type="submit" class="btn btn btn-primary" [disabled]="validateForm.invalid" *ngIf="emailIsChecked && passwordsIsChecked">
+                  Enregistrer
+                </button>
+              </form>
+              
+        </div>
+    </p-card>
+
+
+
+
+</div>

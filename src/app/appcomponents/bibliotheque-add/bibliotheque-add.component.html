@@ -1,0 +1,68 @@
+<div class="content-section introduction">
+    <div>
+        <span class="feature-title">Ajouter un document à ma bibliothèque</span>
+        <span>PrimeNG is a rich set of open source native Angular UI components.</span>
+        <hr>
+        <a routerLink="/bibliotheque" class="btn btn-dark">
+          <i class="fa fa-angle-double-left" aria-hidden="true"></i> Annuler</a>
+    </div>
+</div>
+
+<div class="content-section">
+    <div class="alert alert-primary" *ngIf="uploadURL | async; let uploadSrc; else uploadForm">
+        <div *ngIf="!deletedUpload; else deleted_upload">
+            <strong>Téléchargement terminé</strong>
+            <br>
+            <button (click)="addUploadToBibliotheque()"><i class="fa fa-check"></i>Ajouter à la bibliothèque</button>
+            <button (click)="deleteUploadedFile()"><i class="fa fa-trash"></i> Supprimer le fichier</button>
+            <button (click)="reload()"><i class="fa fa-add"></i>Ajouter une autre fichier</button>
+            <hr>
+            <img width="250" height="250" *ngIf="isImage" src="{{taskMetadata.downloadURLs}}">
+            <p><a [href]="uploadSrc">Télécharger le fichier</a></p>
+            <p>Nom fichier originel: <strong>{{taskMetadata.customMetadata.original_filename}}</strong></p>
+            <pre>{{ taskMetadata | json}}</pre>
+        </div>
+        <ng-template #deleted_upload>
+          <p>Le fichier a bien été supprimé</p>
+        </ng-template>
+    </div>
+    
+    <ng-template #uploadForm>
+      <div class="alert alert-secondary">
+        <label for="newDocLibelle">Libelle</label>
+        <input type="text" id="newDocLibelle" name="newDocLibelle" [(ngModel)]="newDocLibelle" placeholder="Indiquer un libellé à votre fichier">
+        <label for="newDocTypeDocument">Type</label>
+        <select name="newDocTypeDocument" class="form-control" [(ngModel)]="newDocTypeDocument">
+          <option value="undefined">Choisir</option>
+          <option *ngFor="let fileTypeOption of fileTypeOptions" [value]='fileTypeOption.value'>{{fileTypeOption.text}}</option>
+        </select>
+    
+        <label for="file">Fichier:</label>
+        <input type="file" (change)="upload($event)" accept=".png,.jpg,.pdf" />
+        <progress max="100" [value]="(uploadProgress | async)"></progress>
+        <br><hr>
+        <section class="control-bar">
+          <button (click)="task.pause()">Pause</button>
+          <button (click)="task.resume()">Reprendre</button>
+          <button (click)="task.cancel()">Annuler</button>
+        </section>
+      </div>
+    </ng-template>
+    
+    
+    <div class="alert alert-danger" *ngIf="uploadError">
+      <strong>Erreur lors du téléchargement</strong>
+      <button (click)="reload()"><i class="fa fa-add"></i>Recommencer</button>
+      <pre>{{ uploadError | json }}</pre>
+    </div>
+    
+    
+    <div class="alert alert-danger" *ngIf="preUploadError">
+        <strong>Formulaire d'upload non valide</strong>
+        <button (click)="reload()"><i class="fa fa-add"></i>Recommencer</button>
+        <ul>
+          <li *ngFor="let error of preUploadError; let i = index">{{error}}</li>
+        </ul>
+    </div>
+    
+</div>

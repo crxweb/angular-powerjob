@@ -1,0 +1,123 @@
+<div class="content-section introduction">
+  <div>
+    <span class="feature-title">Résultats de la recherche</span>
+    <hr>
+    <a [routerLink]="['/emploiSearchForm']" class="btn btn-dark">
+      <i class="fa fa-angle-double-left" aria-hidden="true"></i> Nouvelle recherche</a>
+    <a routerLink="/emploiSearchForm" class="btn btn-info">
+      <i class="fa fa-save" aria-hidden="true"></i> Enregistrer à mes profils</a>
+  </div>
+</div>
+
+<div class="content-section">
+  <div class="doc-tablewrapper">
+    <!--
+    <table class="doc-table">
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th>Valeur</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="searchParam['criterias']['delaySinceCreation']">
+          <td>Offre créee depuis</td>
+          <td>
+            <ul>
+              <li>{{searchParam.criterias.delaySinceCreation}} jour(s)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr *ngIf="searchParam['criterias']['romeProfessionCardCode']">
+          <td>Code ROME</td>
+          <td>
+            <ul>
+              <li *ngFor="let rome of searchParam.criterias.romeProfessionCardCode">{{rome}}</li>
+            </ul>
+          </td>
+        </tr>
+        <tr *ngIf="searchParam['criterias']['contractTypeCode']">
+          <td>Types de contrat</td>
+          <td>
+            <ul>
+              <li *ngFor="let typecontrat of searchParam.criterias.contractTypeCode">{{typecontrat}}</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  -->
+  </div>
+</div>
+<div class="content-section" *ngIf="oe_box.length == oe_total_count || oe_box.length == 1000; else waiting_results">
+
+  <div>
+
+    <div class="alert alert-secondary" role="alert">
+        <div *ngIf="oe_box.length == 1000; then over1000 else under1000"></div>
+        <ng-template #over1000>
+            Plus de 1000 offres correspondent à votre recherche.
+          </ng-template>
+          <ng-template #under1000>
+              {{oe_total_count != 0 ? oe_total_count : 'Aucune'}} {{oe_total_count > 1 ? 'offres correspondent' : 'offre correspond'}}  à vos critères de recherche.
+          </ng-template>
+      
+    </div>
+
+
+    <input type='text' class="form-control form-control-sm" style='padding:8px;margin-top:15px;' placeholder='Filtrer les documents..'
+      (keyup)='updateFilter($event)' />
+      <br>
+      <p-dropdown [options]="pages" [(ngModel)]="selectedNbPerPage" (onChange)="reCalculateNbResultPerPage()" [placeholder]="nbDataPerPage + ' offres par page'" optionLabel="label"></p-dropdown>    
+    <hr>
+    <ngx-datatable #table class='bootstrap' [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+      [rowHeight]="'auto'" [limit]="nbDataPerPage" [rows]="rows" *ngIf="rows.length>0">
+
+      <ngx-datatable-column name="Action" [cellClass]="'my-custom-cell-center'">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button type="button" class="btn btn-secondary btn-sm">
+            <i class="fa fa-file"></i>
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+
+
+      <ngx-datatable-column name="Titre" prop="title">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span [innerHTML]="row.title"></span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Contrat" prop="contractTypeCode">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="text-center" [innerHTML]="row.contractTypeCode | contratTypeLabel:row.contractTypeName:true:row"></span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Entreprise" prop="companyName">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.companyName}}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="CP" prop="cityCode">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.cityCode}}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Ville" prop="cityName">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.cityName}}
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+  </div>
+</div>
+
+<ng-template #waiting_results>
+  <div class="content-section">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>

@@ -1,0 +1,62 @@
+<div class="content-section introduction">
+  <div>
+    <span class="feature-title">Ajouter un document à ma bibliothèque</span>
+    <hr>
+    <a routerLink="/bibliotheque" class="btn btn-dark">
+      <i class="fa fa-angle-double-left" aria-hidden="true"></i> Annuler</a>
+  </div>
+</div>
+
+<div class="content-section">
+
+  <p-card title="Informations concernant votre nouveau document">
+    <div>
+      <form role="form" [formGroup]="validateForm" novalidate>
+        <div class="form-group">
+          <label for="libelle">Libellé du document</label>
+          <input type="text" class="form-control" id="libelle" name="libelle" formControlName="libelle" (keyup)="checkLibelleTaken()">
+          <div *ngIf="libelleIsTaken===true">
+            <br>
+            <div class="alert alert-danger" role="alert">
+              Ce libellé est déjà utilisé, veuillez en choisir un autre.
+            </div>
+          </div>
+          <errors [control]="validateForm.controls.libelle"></errors>
+        </div>
+        <div class="form-group">
+          <label for="type">Type de document</label>
+          <select name="type" class="form-control" name="type" formControlName="type">
+            <option value="undefined">Choisir</option>
+            <option *ngFor="let documentType of documentTypes" [value]='documentType'>{{documentType}}</option>
+          </select>
+          <errors [control]="validateForm.controls.type"></errors>
+        </div>
+
+
+        <div class="form-group" *ngIf="libelleIsTaken===false && validateForm.valid">
+          <label for="type">Ajouter un fichier</label>
+          <br>
+          <small>Taille max: <strong>{{upload_max_file_size | files:'fileSize'}}</strong></small>
+          <br>
+          <br>
+          <p-fileUpload name="files" accept="{{acceptmime}}" customUpload="true" chooseLabel="Choisir" uploadLabel="Charger le fichier" cancelLabel="Annuler" (uploadHandler)="upload($event)"></p-fileUpload>
+          <progress max="100" [value]="(uploadProgress | async)" *ngIf="preUploadError===null"></progress>
+
+          <div class="alert alert-danger" *ngIf="preUploadError">
+              <strong>Formulaire d'upload non valide</strong>
+              <ul>
+                <li *ngFor="let error of preUploadError; let i = index">{{error}}</li>
+              </ul>
+          </div>          
+        </div>
+      </form>
+
+    </div>
+  </p-card>
+
+  <p-fieldset legend="Formats autorisés" toggleable="true" collapsed="true" *ngIf="libelleIsTaken===false && validateForm.valid">
+      <span *ngFor="let mime of upload_mime_type_allowed" style="font-size:0.75em;padding-left:0px;margin-left:0px;">{{mime}}<hr></span>
+  </p-fieldset>
+
+
+</div>

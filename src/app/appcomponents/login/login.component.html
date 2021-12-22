@@ -1,0 +1,39 @@
+<div class="content-section">
+
+    <p-card title="Se connecter">
+        <div>
+            <button (click)="auth.googleLogin()" type="button" class="btn btn-primary">
+                <i class="fa fa-google"></i> se connecter avec Google</button>
+            <hr>
+            <form [formGroup]="validateForm" (ngSubmit)="signInWithEmailAndPassword()" novalidate>
+                <div class="form-group">
+                    <label for="inputUsernameEmail">Adresse mail</label>
+                    <input type="text" class="form-control" name="email" formControlName="email">
+                    <errors [control]="validateForm.controls.email"></errors>
+
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Mot de passe </label>
+                    <input type="password" class="form-control" name="password" formControlName="password">
+                    <errors [control]="validateForm.controls.password"></errors>
+                    <br>
+                    <button class="btn btn-sm btn-outline-primary float-right" (click)="resetPassword()">Mot de passe oublié?</button>
+                    <br>
+                </div>
+                <div class="checkbox pull-left">
+                    <label>
+                        <input type="checkbox"> Rester connecté </label>
+                </div>
+                <errors [control]="validateForm"></errors>
+                <!-- <pre>{{validateForm.value | json}}</pre> -->
+                <button type="submit" class="btn btn btn-success btn-block" [disabled]="validateForm.invalid">
+                    <i class="fa fa-sign-in"></i> Connection
+                </button>
+            </form>
+        </div>
+    </p-card>
+
+
+
+
+</div>

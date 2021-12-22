@@ -1,0 +1,8 @@
+.modal-header.modal-default {
+    background-color:#636c72;
+    color: white;
+}
+
+.modal-header.modal-default button {
+    color: white;
+}

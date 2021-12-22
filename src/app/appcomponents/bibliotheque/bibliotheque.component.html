@@ -1,0 +1,68 @@
+<div class="content-section introduction">
+    <div>
+        <span class="feature-title">Ma bibliothèque de documents</span>
+        <span>PrimeNG is a rich set of open source native Angular UI components.</span>
+        <hr>
+          <a routerLink="/bibliothequeAjouter" class="btn btn-dark">
+            <i class="fa fa-plus-square" aria-hidden="true"></i> Ajouter un document</a>
+          
+    </div>
+</div>
+
+<div class="content-section">
+    <div>
+        <input type='text' class="form-control form-control-sm" style='padding:8px;margin-top:15px;' placeholder='Filtrer les documents..'
+          (keyup)='updateFilter($event)' />
+        <hr>
+    
+        <ngx-datatable #table class='bootstrap' [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+          [rowHeight]="'auto'" [limit]="10" [rows]="userDocuments$ | async">
+    
+          <ngx-datatable-column name="Visuel" [cellClass]="'my-custom-cell-center'">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span [innerHTML]="row['storage'] ? (row.storage | files:'filePreview':{size:thumb_list_size}) : 'nothing'"></span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Type Document" prop="documentType">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.documentType}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Nom fichier" prop="storage.customMetadata.original_filename">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row['storage'] ? row.storage.customMetadata.original_filename : ''}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Libellé" prop="documentLibelle">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.documentLibelle}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Taille" prop="storage.size">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row['storage'] ? (row.storage.size | files:'fileSize') : ''}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Type MIME" prop="storage.contentType">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row['storage'] ? row.storage.contentType : ''}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Ajouté le" prop="documentAdded">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.documentAdded | date:'dd/MM/yyyy HH:mm'}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Action">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <a *ngIf="row['storage']" class="btn btn-primary btn-sm" target="_self" [href]="row.storage.downloadURLs[0]" download="row.storage.customMetadata.original_filename">
+                <i class="fa fa-cloud-download"></i>
+              </a>
+              <button (click)="showConfirmDeleteModal(row)" type="button" class="btn btn-secondary btn-sm">
+                <i class="fa fa-trash"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+</div>
